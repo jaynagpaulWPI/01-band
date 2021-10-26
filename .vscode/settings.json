@@ -1,0 +1,7 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "/Users/jaynagpaul/Desktop/cs2103/jars/junit-jupiter-api-5.8.1.jar",
+        "/Users/jaynagpaul/Desktop/cs2103/jars/junit-platform-console-standalone-1.8.1.jar"
+    ]
+}
