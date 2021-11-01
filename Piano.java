@@ -85,11 +85,11 @@ public class Piano extends JPanel {
 	 * @param topLeft
 	 * @return
 	 */
-	private Key makeBlackKey(int leftX) {
+	private Key makeBlackKey(int leftX, int pitch) {
 		final int[] xPoints = { leftX, leftX + BLACK_KEY_WIDTH, leftX + BLACK_KEY_WIDTH, leftX };
 		final int[] yPoints = { 0, 0, BLACK_KEY_HEIGHT, BLACK_KEY_HEIGHT };
 		final Polygon polygon = new Polygon(xPoints, yPoints, xPoints.length);
-		Key key = new Key(polygon, Color.BLACK, START_PITCH, this);
+		Key key = new Key(polygon, Color.BLACK, pitch, this);
 		return key;
 	}
 
@@ -99,7 +99,7 @@ public class Piano extends JPanel {
 	 * @param leftX
 	 * @return
 	 */
-	private Key makeLeftWhiteKey(int leftX) {
+	private Key makeLeftWhiteKey(int leftX, int pitch) {
 		// Not drawing a rectangle for the white key because it is easier to
 		// draw a polygon around the black key.
 		int upperRightX = leftX + WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2;
@@ -108,7 +108,7 @@ public class Piano extends JPanel {
 		final int[] xPoints = { leftX, upperRightX, upperRightX, lowerRightX, lowerRightX, leftX };
 		final int[] yPoints = { 0, 0, BLACK_KEY_HEIGHT, BLACK_KEY_HEIGHT, WHITE_KEY_HEIGHT, WHITE_KEY_HEIGHT, 0 };
 		final Polygon polygon = new Polygon(xPoints, yPoints, xPoints.length);
-		Key key = new Key(polygon, Color.WHITE, START_PITCH, this);
+		Key key = new Key(polygon, Color.WHITE, pitch, this);
 		return key;
 	}
 
@@ -118,7 +118,7 @@ public class Piano extends JPanel {
 	 * @param leftX
 	 * @return
 	 */
-	private Key makeRightWhiteKey(int leftX) {
+	private Key makeRightWhiteKey(int leftX, int pitch) {
 		// Not drawing a rectangle for the white key because it is easier to
 		// draw a polygon around the black key.
 		int upperLeftX = leftX + BLACK_KEY_WIDTH / 2;
@@ -128,7 +128,7 @@ public class Piano extends JPanel {
 		final int[] xPoints = { upperLeftX, rightX, rightX, lowerLeftX, lowerLeftX, upperLeftX, upperLeftX };
 		final int[] yPoints = { 0, 0, WHITE_KEY_HEIGHT, WHITE_KEY_HEIGHT, BLACK_KEY_HEIGHT, BLACK_KEY_HEIGHT, 0 };
 		final Polygon polygon = new Polygon(xPoints, yPoints, xPoints.length);
-		Key key = new Key(polygon, Color.WHITE, START_PITCH, this);
+		Key key = new Key(polygon, Color.WHITE, pitch, this);
 		return key;
 	}
 
@@ -138,7 +138,7 @@ public class Piano extends JPanel {
 	 * @param leftX
 	 * @return
 	 */
-	private Key makeMiddleWhiteKey(int leftX) {
+	private Key makeMiddleWhiteKey(int leftX, int pitch) {
 		// Not drawing a rectangle for the white key because it is easier to
 		// draw a polygon around the black key.
 		// TODO: better var names and refactor
@@ -153,7 +153,7 @@ public class Piano extends JPanel {
 				BLACK_KEY_HEIGHT, BLACK_KEY_HEIGHT, 0 };
 
 		final Polygon polygon = new Polygon(xPoints, yPoints, xPoints.length);
-		Key key = new Key(polygon, Color.WHITE, START_PITCH, this);
+		Key key = new Key(polygon, Color.WHITE, pitch, this);
 		return key;
 	}
 
@@ -163,19 +163,19 @@ public class Piano extends JPanel {
 	 * @param leftX
 	 * @return
 	 */
-	private void makeOctave(int leftX) {
-		_keys.add(makeBlackKey(leftX + WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2));
-		_keys.add(makeLeftWhiteKey(leftX));
-		_keys.add(makeMiddleWhiteKey(leftX + WHITE_KEY_WIDTH));
-		_keys.add(makeBlackKey(leftX + 2 * WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2));
-		_keys.add(makeRightWhiteKey(leftX + WHITE_KEY_WIDTH * 2));
-		_keys.add(makeLeftWhiteKey(leftX + WHITE_KEY_WIDTH * 3));
-		_keys.add(makeBlackKey(leftX + 4 * WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2));
-		_keys.add(makeMiddleWhiteKey(leftX + WHITE_KEY_WIDTH * 4));
-		_keys.add(makeBlackKey(leftX + WHITE_KEY_WIDTH * 5 - BLACK_KEY_WIDTH / 2));
-		_keys.add(makeMiddleWhiteKey(leftX + WHITE_KEY_WIDTH * 5));
-		_keys.add(makeBlackKey(leftX + WHITE_KEY_WIDTH * 6 - BLACK_KEY_WIDTH / 2));
-		_keys.add(makeRightWhiteKey(leftX + WHITE_KEY_WIDTH * 6));
+	private void makeOctave(int leftX, int octave) {
+		_keys.add(makeBlackKey(leftX + WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2, octave*12+START_PITCH+1));
+		_keys.add(makeLeftWhiteKey(leftX,  octave*12+START_PITCH));
+		_keys.add(makeMiddleWhiteKey(leftX + WHITE_KEY_WIDTH,  octave*12+START_PITCH+2));
+		_keys.add(makeBlackKey(leftX + 2 * WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2,  octave*12+START_PITCH+3));
+		_keys.add(makeRightWhiteKey(leftX + WHITE_KEY_WIDTH * 2, octave*12+START_PITCH+4));
+		_keys.add(makeLeftWhiteKey(leftX + WHITE_KEY_WIDTH * 3,  octave*12+START_PITCH+5));
+		_keys.add(makeBlackKey(leftX + 4 * WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2,  octave*12+START_PITCH+6));
+		_keys.add(makeMiddleWhiteKey(leftX + WHITE_KEY_WIDTH * 4, octave*12+START_PITCH+7));
+		_keys.add(makeBlackKey(leftX + WHITE_KEY_WIDTH * 5 - BLACK_KEY_WIDTH / 2,  octave*12+START_PITCH+8));
+		_keys.add(makeMiddleWhiteKey(leftX + WHITE_KEY_WIDTH * 5, octave*12+START_PITCH+9));
+		_keys.add(makeBlackKey(leftX + WHITE_KEY_WIDTH * 6 - BLACK_KEY_WIDTH / 2,  octave*12+START_PITCH+10));
+		_keys.add(makeRightWhiteKey(leftX + WHITE_KEY_WIDTH * 6, octave*12+START_PITCH+11));
 	}
 
 	// TODO: implement this method. You should create and use several helper methods
@@ -185,25 +185,9 @@ public class Piano extends JPanel {
 	 * add them to the _keys array.
 	 */
 	private void makeKeys() {
-		// Just as an example, this draws the left-most black key at its proper
-		// position.
-		final int[] xCoords = new int[] { WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2, WHITE_KEY_WIDTH + BLACK_KEY_WIDTH / 2,
-				WHITE_KEY_WIDTH + BLACK_KEY_WIDTH / 2, WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2 };
-		final int[] yCoords = new int[] { 0, 0, BLACK_KEY_HEIGHT, BLACK_KEY_HEIGHT };
-		final Polygon polygon = new Polygon(xCoords, yCoords, xCoords.length);
-		final Key key = new Key(polygon, Color.BLACK, START_PITCH, this);
-
-		// Add this key to the list of keys so that it gets painted
-
-		// generate dummy keys
-		// for (int i = 1; i < 5; i++) {
-		// final Key testKey = makeBlackKey(0 + i * WHITE_KEY_WIDTH);
-		// _keys.add(testKey);
-		// }
-
-		makeOctave(0);
-		makeOctave(WHITE_KEY_WIDTH * 7);
-		makeOctave(WHITE_KEY_WIDTH * 14);
+		for( int i=0; i<NUM_OCTAVES; i++) {
+		makeOctave(WHITE_KEY_WIDTH * 7*i, i);
+		}
 
 	}
 
