@@ -70,7 +70,12 @@ public class Key {
 	public void paint(Graphics g) {
 		// TODO: Change this to handle the different key colors
 		// and different key states (pressed down or not).
-		g.setColor(_color);
+		if (_isOn) {
+			g.setColor(Color.GRAY);
+		} else {
+			g.setColor(_color);
+		}
+
 		g.fillPolygon(_polygon);
 		g.setColor(Color.BLACK); // If the color is white, we need to still outline it in black.
 		g.drawPolygon(_polygon);
