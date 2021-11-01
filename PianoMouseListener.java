@@ -9,11 +9,12 @@ import java.util.*;
 public class PianoMouseListener extends MouseAdapter {
 	// You are free to add more instance variables if you wish.
 	private ArrayList<Key> _keys;
+	private Key _onKey;
 
 	/**
 	 * @param keys the list of keys in the piano.
 	 */
-	public PianoMouseListener (ArrayList<Key> keys) {
+	public PianoMouseListener(ArrayList<Key> keys) {
 		_keys = keys;
 	}
 
@@ -21,23 +22,37 @@ public class PianoMouseListener extends MouseAdapter {
 	@Override
 	/**
 	 * This method is called by Swing whenever the user drags the mouse.
-	 * @param e the MouseEvent containing the (x,y) location, relative to the upper-left-hand corner
-	 * of the entire piano, of where the mouse is currently located.
+	 * 
+	 * @param e the MouseEvent containing the (x,y) location, relative to the
+	 *          upper-left-hand corner of the entire piano, of where the mouse is
+	 *          currently located.
 	 */
-	public void mouseDragged (MouseEvent e) {
+	public void mouseDragged(MouseEvent e) {
+		for (Key k : _keys) {
+			if (k.getPolygon().contains(e.getX(), e.getY())) {
+				if (_onKey != null) {
+					_onKey.play(false);
+				}
+				_onKey = k;
+				_onKey.play(true);
+			}
+		}
 	}
 
 	// TODO implement this method.
 	@Override
 	/**
 	 * This method is called by Swing whenever the user presses the mouse.
-	 * @param e the MouseEvent containing the (x,y) location, relative to the upper-left-hand corner
-	 * of the entire piano, of where the mouse is currently located.
+	 * 
+	 * @param e the MouseEvent containing the (x,y) location, relative to the
+	 *          upper-left-hand corner of the entire piano, of where the mouse is
+	 *          currently located.
 	 */
-	public void mousePressed (MouseEvent e) {
+	public void mousePressed(MouseEvent e) {
 		for (Key key : _keys) {
 			if (key.getPolygon().contains(e.getX(), e.getY())) {
-				key.play(true);  // Note that the key should eventually be turned off!
+				key.play(true); // Note that the key should eventually be turned off!
+				_onKey = key;
 				System.out.println("This key was pressed: " + key);
 			}
 		}
@@ -47,9 +62,15 @@ public class PianoMouseListener extends MouseAdapter {
 	@Override
 	/**
 	 * This method is called by Swing whenever the user releases the mouse.
-	 * @param e the MouseEvent containing the (x,y) location, relative to the upper-left-hand corner
-	 * of the entire piano, of where the mouse is currently located.
+	 * 
+	 * @param e the MouseEvent containing the (x,y) location, relative to the
+	 *          upper-left-hand corner of the entire piano, of where the mouse is
+	 *          currently located.
 	 */
-	public void mouseReleased (MouseEvent e) {
+	public void mouseReleased(MouseEvent e) {
+		if (_onKey != null) {
+			_onKey.play(false);
+			_onKey = null;
+		}
 	}
 }
