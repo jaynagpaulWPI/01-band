@@ -38,13 +38,10 @@ class PianoTester {
 		// Test that pressing and dragging the mouse *within* the same key
 		// should cause the key to be turned on only once, not multiple times.
 		// Use makeMouseEvent and TestReceiver.getKeyOnCount.
-		// TODO complete me
 
 		_mouseListener.mouseDragged(makeMouseEvent(0, 1));
 		assertEquals(_receiver.getKeyOnCount(Piano.START_PITCH), 1);
 	}
-
-	// TODO write at least 3 more tests!
 
 	@Test
 	void testKeyReleaseOutOfBounds() {
@@ -73,7 +70,7 @@ class PianoTester {
 
 	@Test
 	void testDragToDifferentKey() {
-		// original test #36
+		// original test #3
 		// Test that pressing and dragging the mouse to a new key
 		// should cause the previous key to be turned off and the new
 		// key to be turned on

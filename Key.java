@@ -61,15 +61,12 @@ public class Key {
 		}
 	}
 
-	// TODO implement this method.
 	/**
 	 * Paints the key using the specified Swing Graphics object.
 	 * 
 	 * @param g the Graphics object to be used for painting.
 	 */
 	public void paint(Graphics g) {
-		// TODO: Change this to handle the different key colors
-		// and different key states (pressed down or not).
 		g.setColor(_isOn ? Color.GRAY : _color); // GRAY if pressed down, key._color else
 		g.fillPolygon(_polygon);
 		g.setColor(Color.BLACK); // If the color is white, we need to still outline it in black.

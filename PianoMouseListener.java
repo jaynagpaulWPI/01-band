@@ -9,7 +9,7 @@ import java.util.*;
 public class PianoMouseListener extends MouseAdapter {
 	// You are free to add more instance variables if you wish.
 	private ArrayList<Key> _keys;
-	private Key _onKey;
+	private Key _onKey; // the key that is currently pressed
 
 	/**
 	 * @param keys the list of keys in the piano.
@@ -18,7 +18,6 @@ public class PianoMouseListener extends MouseAdapter {
 		_keys = keys;
 	}
 
-	// TODO implement this method.
 	@Override
 	/**
 	 * This method is called by Swing whenever the user drags the mouse.
@@ -35,12 +34,10 @@ public class PianoMouseListener extends MouseAdapter {
 				}
 				_onKey = k;
 				_onKey.play(true);
-				System.out.println("dragged over " + _onKey);
 			}
 		}
 	}
 
-	// TODO implement this method.
 	@Override
 	/**
 	 * This method is called by Swing whenever the user presses the mouse.
@@ -51,7 +48,7 @@ public class PianoMouseListener extends MouseAdapter {
 	 */
 	public void mousePressed(MouseEvent e) {
 		for (Key key : _keys) {
-			if (key.getPolygon().contains(e.getX(), e.getY())) {
+			if (key.getPolygon().contains(e.getX(), e.getY()) && key != _onKey) {
 				key.play(true); // Note that the key should eventually be turned off!
 				_onKey = key;
 				System.out.println("This key was pressed: " + key);
@@ -59,7 +56,6 @@ public class PianoMouseListener extends MouseAdapter {
 		}
 	}
 
-	// TODO implement this method.
 	@Override
 	/**
 	 * This method is called by Swing whenever the user releases the mouse.
