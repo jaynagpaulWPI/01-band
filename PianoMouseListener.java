@@ -29,12 +29,13 @@ public class PianoMouseListener extends MouseAdapter {
 	 */
 	public void mouseDragged(MouseEvent e) {
 		for (Key k : _keys) {
-			if (k.getPolygon().contains(e.getX(), e.getY())) {
+			if (k.getPolygon().contains(e.getX(), e.getY()) && k != _onKey) {
 				if (_onKey != null) {
 					_onKey.play(false);
 				}
 				_onKey = k;
 				_onKey.play(true);
+				System.out.println("dragged over " + _onKey);
 			}
 		}
 	}
