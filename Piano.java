@@ -15,10 +15,13 @@ public class Piano extends JPanel {
 	public static int WHITE_KEY_HEIGHT = 200;
 	public static int BLACK_KEY_HEIGHT = WHITE_KEY_HEIGHT / 2;
 	public static int NUM_WHITE_KEYS_PER_OCTAVE = 7;
+	public static int NUM_BLACK_KEYS_PER_OCTAVE = 5;
+	public static int NUM_KEYS_PER_OCTAVE = NUM_WHITE_KEYS_PER_OCTAVE + NUM_BLACK_KEYS_PER_OCTAVE;
 	public static int NUM_OCTAVES = 3;
 	public static int NUM_WHITE_KEYS = NUM_WHITE_KEYS_PER_OCTAVE * NUM_OCTAVES;
 	public static int WIDTH = NUM_WHITE_KEYS * WHITE_KEY_WIDTH;
 	public static int HEIGHT = WHITE_KEY_HEIGHT;
+	public static int TOP = 0;
 
 	private ArrayList<Key> _keys = new ArrayList<>();
 	private Receiver _receiver;
@@ -78,117 +81,158 @@ public class Piano extends JPanel {
 	}
 
 	/**
-	 * Creates a black key for the piano with top-left corner at (leftX, 0) and
-	 * width and height specified by the constants BLACK_KEY_WIDTH and
-	 * BLACK_KEY_HEIGHT.
-	 *
-	 * @param topLeft
-	 * @return
+	 * Creates a key for the piano
+	 * 
+	 * @param upperLeftX the x-coordinate of the top-left corner of the key
+	 * @param upperWidth the width of the key at the top edge
+	 * @param lowerLeftX the x-coordinate of the top-left corner of the key
+	 * @param lowerWidth the width of the key at the bottom edge
+	 * @param height     the height of the key
+	 * @param color      the color of the key
+	 * @param pitch      the pitch of the key
+	 * 
+	 * @return the key
 	 */
-	private Key makeBlackKey(int leftX, int pitch) {
-		final int[] xPoints = { leftX, leftX + BLACK_KEY_WIDTH, leftX + BLACK_KEY_WIDTH, leftX };
-		final int[] yPoints = { 0, 0, BLACK_KEY_HEIGHT, BLACK_KEY_HEIGHT };
+	private Key makeKey(int lowerLeftX, int lowerWidth, int upperLeftX, int upperWidth, int height, Color color,
+			int pitch) {
+		/*-
+		 * Example Key: left white key
+		 * upperLeftX -> ____					|
+		 *				 |  |					|
+		 *				 |  |___ <- upperRightX |
+		 *				 |	   |				|	
+		 *				 |	   |				|
+		 * lowerLeftX -> |_____| <- lowerRightX | <- height
+		 */
+
+		// Drawing from upper left to right and then down, left, up again.
+		final int[] xPoints = { upperLeftX, upperLeftX + upperWidth, upperLeftX + upperWidth, lowerLeftX + lowerWidth,
+				lowerLeftX + lowerWidth, lowerLeftX, lowerLeftX, upperLeftX, upperLeftX };
+
+		// If it's a black key, the height is the same as the black key height, so we
+		// can use this as a common abstraction
+		final int[] yPoints = { TOP, TOP, BLACK_KEY_HEIGHT, BLACK_KEY_HEIGHT, height, height, BLACK_KEY_HEIGHT,
+				BLACK_KEY_HEIGHT, TOP };
+
 		final Polygon polygon = new Polygon(xPoints, yPoints, xPoints.length);
-		Key key = new Key(polygon, Color.BLACK, pitch, this);
-		return key;
+		return new Key(polygon, color, pitch, this);
 	}
 
 	/**
-	 * Creates a left white key for the piano with top-left corner at (leftX, 0)
+	 * Creates a black key for the piano with bottom-left corner at (lowerLeftX,
+	 * BLACK_KEY_HEIGHT) and width and height specified by the constants
+	 * BLACK_KEY_WIDTH and BLACK_KEY_HEIGHT.
 	 *
-	 * @param leftX
-	 * @return
+	 * @param lowerLeftX the x-coordinate of the bottom-left corner of the key
+	 * @param pitch      the pitch of the key
+	 * @return the black key
 	 */
-	private Key makeLeftWhiteKey(int leftX, int pitch) {
-		// Not drawing a rectangle for the white key because it is easier to
-		// draw a polygon around the black key.
-		int upperRightX = leftX + WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2;
-		int lowerRightX = leftX + WHITE_KEY_WIDTH;
+	private Key makeBlackKey(int lowerLeftX, int pitch) {
+		final int upperLeftX = lowerLeftX;
+		final int upperWidth = BLACK_KEY_WIDTH;
+		final int lowerWidth = BLACK_KEY_WIDTH;
+		final int height = BLACK_KEY_HEIGHT;
 
-		final int[] xPoints = { leftX, upperRightX, upperRightX, lowerRightX, lowerRightX, leftX };
-		final int[] yPoints = { 0, 0, BLACK_KEY_HEIGHT, BLACK_KEY_HEIGHT, WHITE_KEY_HEIGHT, WHITE_KEY_HEIGHT, 0 };
-		final Polygon polygon = new Polygon(xPoints, yPoints, xPoints.length);
-		Key key = new Key(polygon, Color.WHITE, pitch, this);
-		return key;
+		return makeKey(lowerLeftX, lowerWidth, upperLeftX, upperWidth, height, Color.BLACK, pitch);
 	}
 
 	/**
-	 * Creates a right white key for the piano with top-left corner at (leftX, 0)
+	 * Creates a white key for the piano with bottom-left corner at (lowerLeftX,
+	 * WHITE_KEY_HEIGHT) and width and height specified by the constants
+	 * WHITE_KEY_WIDTH and WHITE_KEY_HEIGHT.
 	 *
-	 * @param leftX
-	 * @return
+	 * @param lowerLeftX the x-coordinate of the bottom-left corner of the key
+	 * @param upperLeftX the x-coordinate of the top-left corner of the key
+	 * @param upperWidth the width of the key at the top edge
+	 * @param pitch      the pitch of the key
+	 * @return the white key
 	 */
-	private Key makeRightWhiteKey(int leftX, int pitch) {
-		// Not drawing a rectangle for the white key because it is easier to
-		// draw a polygon around the black key.
-		int upperLeftX = leftX + BLACK_KEY_WIDTH / 2;
-		int lowerLeftX = leftX;
-		int rightX = leftX + WHITE_KEY_WIDTH;
+	private Key makeWhiteKey(int lowerLeftX, int upperLeftX, int upperWidth, int pitch) {
+		final int lowerWidth = WHITE_KEY_WIDTH;
+		final int height = WHITE_KEY_HEIGHT;
 
-		final int[] xPoints = { upperLeftX, rightX, rightX, lowerLeftX, lowerLeftX, upperLeftX, upperLeftX };
-		final int[] yPoints = { 0, 0, WHITE_KEY_HEIGHT, WHITE_KEY_HEIGHT, BLACK_KEY_HEIGHT, BLACK_KEY_HEIGHT, 0 };
-		final Polygon polygon = new Polygon(xPoints, yPoints, xPoints.length);
-		Key key = new Key(polygon, Color.WHITE, pitch, this);
-		return key;
+		return makeKey(lowerLeftX, lowerWidth, upperLeftX, upperWidth, height, Color.WHITE, pitch);
 	}
 
 	/**
-	 * Creates a middle white key for the piano with top-left corner at (leftX, 0)
+	 * Creates a left white key for the piano with bottom-left corner at
+	 * (lowerLeftX, WHITE_KEY_HEIGHT)
 	 *
-	 * @param leftX
+	 * @param lowerLeftX the x-coordinate of the bottom-left corner of the key
+	 * @param pitch      the pitch of the key
 	 * @return
 	 */
-	private Key makeMiddleWhiteKey(int leftX, int pitch) {
-		// Not drawing a rectangle for the white key because it is easier to
-		// draw a polygon around the black key.
-		// TODO: better var names and refactor
-		int upperLeftX = leftX + BLACK_KEY_WIDTH / 2;
-		int lowerLeftX = leftX;
-		int upperRightX = leftX + WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2;
-		int lowerRightX = leftX + WHITE_KEY_WIDTH;
+	private Key makeLeftWhiteKey(int lowerLeftX, int pitch) {
+		final int upperLeftX = lowerLeftX;
+		final int upperWidth = WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2;
 
-		final int[] xPoints = { upperLeftX, upperRightX, upperRightX, lowerRightX, lowerRightX, lowerLeftX, lowerLeftX,
-				upperLeftX, upperLeftX };
-		final int[] yPoints = { 0, 0, BLACK_KEY_HEIGHT, BLACK_KEY_HEIGHT, WHITE_KEY_HEIGHT, WHITE_KEY_HEIGHT,
-				BLACK_KEY_HEIGHT, BLACK_KEY_HEIGHT, 0 };
-
-		final Polygon polygon = new Polygon(xPoints, yPoints, xPoints.length);
-		Key key = new Key(polygon, Color.WHITE, pitch, this);
-		return key;
+		return makeWhiteKey(lowerLeftX, upperLeftX, upperWidth, pitch);
 	}
 
 	/**
-	 * TODO: Implement this method. Creates the octave of both white and black keys.
+	 * Creates a right white key for the piano with bottom-left corner at
+	 * (lowerLeftX, WHITE_KEY_HEIGHT)
 	 *
-	 * @param leftX
+	 * @param lowerLeftX the x-coordinate of the bottom-left corner of the key
+	 * @param pitch      the pitch of the key
+	 * @return
+	 */
+	private Key makeRightWhiteKey(int lowerLeftX, int pitch) {
+		int upperLeftX = lowerLeftX + BLACK_KEY_WIDTH / 2;
+		int upperWidth = WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2;
+
+		return makeWhiteKey(lowerLeftX, upperLeftX, upperWidth, pitch);
+	}
+
+	/**
+	 * Creates a middle white key for the piano with bottom-left corner at
+	 * (lowerLeftX, WHITE_KEY_HEIGHT)
+	 *
+	 * @param lowerLeftX the x-coordinate of the bottom-left corner of the key
+	 * @param pitch      the pitch of the key
+	 * @return
+	 */
+	private Key makeMiddleWhiteKey(int lowerLeftX, int pitch) {
+		final int upperLeftX = lowerLeftX + BLACK_KEY_WIDTH / 2;
+		final int upperWidth = WHITE_KEY_WIDTH - BLACK_KEY_WIDTH;
+
+		return makeWhiteKey(lowerLeftX, upperLeftX, upperWidth, pitch);
+	}
+
+	/**
+	 * Creates an octave for the piano
+	 *
+	 * @param leftX  the x-coordinate of the leftmost key of the octave
+	 * @param octave the octave number (starting at 0)
 	 * @return
 	 */
 	private void makeOctave(int leftX, int octave) {
-		_keys.add(makeBlackKey(leftX + WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2, octave*12+START_PITCH+1));
-		_keys.add(makeLeftWhiteKey(leftX,  octave*12+START_PITCH));
-		_keys.add(makeMiddleWhiteKey(leftX + WHITE_KEY_WIDTH,  octave*12+START_PITCH+2));
-		_keys.add(makeBlackKey(leftX + 2 * WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2,  octave*12+START_PITCH+3));
-		_keys.add(makeRightWhiteKey(leftX + WHITE_KEY_WIDTH * 2, octave*12+START_PITCH+4));
-		_keys.add(makeLeftWhiteKey(leftX + WHITE_KEY_WIDTH * 3,  octave*12+START_PITCH+5));
-		_keys.add(makeBlackKey(leftX + 4 * WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2,  octave*12+START_PITCH+6));
-		_keys.add(makeMiddleWhiteKey(leftX + WHITE_KEY_WIDTH * 4, octave*12+START_PITCH+7));
-		_keys.add(makeBlackKey(leftX + WHITE_KEY_WIDTH * 5 - BLACK_KEY_WIDTH / 2,  octave*12+START_PITCH+8));
-		_keys.add(makeMiddleWhiteKey(leftX + WHITE_KEY_WIDTH * 5, octave*12+START_PITCH+9));
-		_keys.add(makeBlackKey(leftX + WHITE_KEY_WIDTH * 6 - BLACK_KEY_WIDTH / 2,  octave*12+START_PITCH+10));
-		_keys.add(makeRightWhiteKey(leftX + WHITE_KEY_WIDTH * 6, octave*12+START_PITCH+11));
+		final int firstPitch = octave * NUM_KEYS_PER_OCTAVE + START_PITCH;
+		final Key[] keys = { // Declarative list of all the keys in an octave
+				makeLeftWhiteKey(leftX, firstPitch),
+				makeBlackKey(leftX + WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2, firstPitch + 1),
+				makeMiddleWhiteKey(leftX + WHITE_KEY_WIDTH, firstPitch + 2),
+				makeBlackKey(leftX + 2 * WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2, firstPitch + 3),
+				makeRightWhiteKey(leftX + WHITE_KEY_WIDTH * 2, firstPitch + 4),
+
+				makeLeftWhiteKey(leftX + WHITE_KEY_WIDTH * 3, firstPitch + 5),
+				makeBlackKey(leftX + 4 * WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2, firstPitch + 6),
+				makeMiddleWhiteKey(leftX + WHITE_KEY_WIDTH * 4, firstPitch + 7),
+				makeBlackKey(leftX + WHITE_KEY_WIDTH * 5 - BLACK_KEY_WIDTH / 2, firstPitch + 8),
+				makeMiddleWhiteKey(leftX + WHITE_KEY_WIDTH * 5, firstPitch + 9),
+				makeBlackKey(leftX + WHITE_KEY_WIDTH * 6 - BLACK_KEY_WIDTH / 2, firstPitch + 10),
+				makeRightWhiteKey(leftX + WHITE_KEY_WIDTH * 6, firstPitch + 11), };
+		_keys.addAll(Arrays.asList(keys));
 	}
 
-	// TODO: implement this method. You should create and use several helper methods
-	// to do so.
 	/**
 	 * Instantiate all the Key objects with their correct polygons and pitches, and
 	 * add them to the _keys array.
 	 */
 	private void makeKeys() {
-		for( int i=0; i<NUM_OCTAVES; i++) {
-		makeOctave(WHITE_KEY_WIDTH * 7*i, i);
+		for (int i = 0; i < NUM_OCTAVES; i++) {
+			makeOctave(WHITE_KEY_WIDTH * NUM_WHITE_KEYS_PER_OCTAVE * i, i);
 		}
-
 	}
 
 	// DO NOT MODIFY THIS METHOD.
