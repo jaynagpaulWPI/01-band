@@ -7,12 +7,11 @@ import java.util.*;
 
 // DO NOT MODIFY THIS CLASS
 /**
- * Implements a "band" application with a piano keyboard that
- * can play different musical instruments, either locally or
- * over the network.
+ * Implements a "band" application with a piano keyboard that can play different
+ * musical instruments, either locally or over the network.
  */
 public class Band {
-	public static void main (String[] args) {
+	public static void main(String[] args) {
 		// Create the local MIDI receiver
 		final Receiver localReceiver;
 		try {
@@ -33,7 +32,7 @@ public class Band {
 		frame.add(controlPanel, BorderLayout.SOUTH);
 		// Add a listener to radio button that selects the local vs. remote receiver.
 		controlPanel.addActionListener(new ActionListener() {
-			public void actionPerformed (ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {
 				if (controlPanel.isRemote()) {
 					try {
 						// Construct a new receiver given the currently entered IP.
